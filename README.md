@@ -20,7 +20,7 @@ Tras tener toda la base preparada, he iniciado buscando las imagenes de [Wordpre
 
 Cuando he terminado de montar los contendedores y volumenes que hacen falta para lanzar el proyecto, y he procedido a lanzar la aplicación (tras solucionar algunos pequeños de conflictos de nombres) me he encontrado con el siguiente error:
 
-![Image text](/Users/jordiros/Documents/papasAcme/readmeData/errorEstablishingADatabaseConnection.png)
+![Image text](https://github.com/jordiros27/papasAcme/blob/main/readmeData/errorEstablishingADatabaseConnection.png)
 
 Encontrar la solución no ha sido fácil, entendía el motivo, no había conexión entre los dos contenedores pero no encontraba una solución. Primero he intentado abrir puertos en el contendor de mysql pero no he llegado a una solución correcta, he revisado los datos de acceso y seguía sin funcionar. 
 
