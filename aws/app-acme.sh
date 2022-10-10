@@ -1,10 +1,5 @@
 #!/bin /bash
 
-# Esperar hasta que la isntancia este lista
-until [[ -f /var/lib/cloud/instance/boot-finished ]]; do
-  sleep 1
-done
-
 # Prepara la instacia
 sudo yum update
 sudo yum -y install git

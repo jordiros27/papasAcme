@@ -11,14 +11,14 @@ terraform {
  
 provider "aws" {
 	region = "us-east-2"
-	access_key = "AKIAQSD4FDSBSEKTQGLD"
-	secret_key = "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"
+	access_key = "AKIAQSD4FDSBXBGNLAOE"
+	secret_key = "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"
 }
 
 resource "aws_instance" "balancer-ec2" {
 	ami = "ami-0f924dc71d44d23e2"
 	instance_type = "t2.micro"
-  key_name = aws_key_pair.ssh-public-key.key_name
+  key_name = "ssh-key"
   user_data = <<-EOF
 	      #!/bin/bash
 		    sudo yum update -y
@@ -35,22 +35,21 @@ resource "aws_instance" "balancer-ec2" {
 resource "aws_instance" "app-ec2" {
 	ami = "ami-0f924dc71d44d23e2"
 	instance_type = "t2.micro"
-  key_name = aws_key_pair.ssh-public-key.key_name
+  key_name = "ssh-key"
 	tags = {
 		Name = "app-papas-acme"
 	}
-  
-  provisioner "file" {
-    content = "sh app-acme.sh"
-    destination = "/tmp/app-acme.sh"
-  }
 
-  connection {
-    type = "ssh"
-    user = "ec2-user"
-    private_key = file("../ssh-key.pem")
-    host = aws_instance.app-ec2.public_ip
-  }
+  user_data = <<-EOF
+	      #!/bin/bash
+		    sudo yum update
+        sudo yum -y install git
+        mkdir terraform
+        cd terraform/
+        git init
+        git pull https://github.com/jordiros27/papasAcme.git
+        sh aws/app-acme.sh
+		    EOF
 
   vpc_security_group_ids = [aws_security_group.ssh-security.id, aws_security_group.http-security.id, aws_security_group.https-security.id]
 
