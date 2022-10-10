@@ -49,7 +49,7 @@ resource "aws_instance" "app-ec2" {
         sh aws/app-acme.sh
 		    EOF
 
-  vpc_security_group_ids = [aws_security_group.app-security.id, aws_security_group.ssh-security.id, aws_security_group.http-security.id, aws_security_group.https-security.id]
+  vpc_security_group_ids = [aws_security_group.ssh-security.id, aws_security_group.http-security.id, aws_security_group.https-security.id]
 
 }
 
@@ -80,24 +80,6 @@ resource "aws_security_group" "https-security" {
 		protocol = "tcp"
 		cidr_blocks = ["0.0.0.0/0"]
 	}
- 
-    egress {
-        from_port = 0
-        to_port = 0
-        protocol = "-1"
-        cidr_blocks = ["0.0.0.0/0"]
-    }
-}
-
-resource "aws_security_group" "app-security" {
-	name = "app-security-goup"
- 
-	ingress {
-		from_port = 8000
-    to_port = 8000
-    protocol = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
  
     egress {
         from_port = 0

@@ -1,4 +1,4 @@
-#!/bin /bash
+#!/bin/bash
 
 # Ejecutar terraform
 mkdir terraform/

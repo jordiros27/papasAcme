@@ -18,11 +18,7 @@ sudo usermod -aG docker ec2-user
 
 # Preparar script para reboot
 cd
-sudo chmod u+x /terraform/local/startup.sh
-sudo cp local/startup.sh /etc/init.d
-cd /etc/rc2.d
-sudo ln -s /etc/init.d/startup.sh
-sudo mv startup.sh S70test
+crontab -e
 
 # Reinicio de la instancia
-sudo reboot
+@reboot(sleep 90; sh /terraform/local/startup.sh)
