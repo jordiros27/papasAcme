@@ -18,8 +18,4 @@ sudo usermod -aG docker ec2-user
 
 # Preparar script para reboot
 cd
-chmod +x /etc/rc.d/rc.local
-chmod +x /terraform/local/startup.sh
-
-# Reinicio de la instancia
-sudo reboot
+sh /terraform/local/startup.sh
