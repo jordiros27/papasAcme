@@ -43,10 +43,9 @@ resource "docker_container" "container-mysql" {
     restart = "on-failure"
     env = ["MYSQL_DATABASE=wordpress", "MYSQL_USER=user", "MYSQL_PASSWORD=user", "MYSQL_ROOT_PASSWORD=root"]
     network_mode = "wordpress_net"
-    mounts {
-        type = "volume"
-        target = "/var/lib/mysql"
-        source = "db_data"
+    volumes {
+        volume_name = "db_data"
+        container_path = "/var/lib/mysql"
     }
 }
 
@@ -57,13 +56,12 @@ resource "docker_container" "container-wordpress" {
     network_mode = "wordpress_net"
     ports {
         internal = 80
-        external = 8000
+        external = 80
     }
     env = ["WORDPRESS_DB_HOST=database", "WORDPRESS_DB_USER=user", "WORDPRESS_DB_PASSWORD=user", "WORDPRESS_DB_NAME=wordpress"]
-    mounts {
-        type = "volume"
-        target = "/var/www/html"
-        source = "wordpress_site"
+    volumes {
+        volume_name = "wordpress_site"
+        container_path = "/var/www/html"
     }
 }
 
@@ -71,6 +69,10 @@ resource "docker_container" "container-wordpress" {
 # Volumenes para el almacenamiento de datos
 
 # Volumes
-resource "docker_volume" "db_data" {}
+resource "docker_volume" "db_data" {
+    name = "db_data"
+}
 
-resource "docker_volume" "wordpress_site" {}
+resource "docker_volume" "wordpress_site" {
+    name = "wordpress_site"
+}
