@@ -21,10 +21,8 @@ resource "aws_instance" "balancer-ec2" {
   key_name = "ssh-key"
   user_data = <<-EOF
 	      #!/bin/bash
-		    sudo yum update -y
-		    sudo yum -y install httpd -y
-		    sudo service httpd start
-		    echo "Hello world from EC2 $(hostname -f)" > /var/www/html/index.html
+        $IP=(curl ifconfig.me)
+        echo $IP papas-acme.com www.papas-acme.com > /etc/host
 		    EOF
 	tags = {
 		Name = "balancer-papas-acme"
@@ -51,7 +49,7 @@ resource "aws_instance" "app-ec2" {
         sh aws/app-acme.sh
 		    EOF
 
-  vpc_security_group_ids = [aws_security_group.ssh-security.id, aws_security_group.http-security.id, aws_security_group.https-security.id]
+  vpc_security_group_ids = [aws_security_group.app-security.id, aws_security_group.ssh-security.id]
 
 }
 
@@ -66,11 +64,11 @@ resource "aws_security_group" "http-security" {
 	}
  
   egress {
-      from_port = 0
-      to_port = 0
-      protocol = "-1"
-      cidr_blocks = ["0.0.0.0/0"]
-  }
+        from_port = 8000
+        to_port = 8000
+        protocol = "tcp"
+        cidr_blocks = ["0.0.0.0/0"]
+    }
 }
 
 resource "aws_security_group" "https-security" {
@@ -82,6 +80,24 @@ resource "aws_security_group" "https-security" {
 		protocol = "tcp"
 		cidr_blocks = ["0.0.0.0/0"]
 	}
+ 
+    egress {
+        from_port = 8000
+        to_port = 8000
+        protocol = "tcp"
+        cidr_blocks = ["0.0.0.0/0"]
+    }
+}
+
+resource "aws_security_group" "app-security" {
+	name = "app-security-goup"
+ 
+	ingress {
+		from_port = 8000
+    to_port = 8000
+    protocol = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
  
     egress {
         from_port = 0

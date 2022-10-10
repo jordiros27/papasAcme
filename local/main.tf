@@ -56,7 +56,7 @@ resource "docker_container" "container-wordpress" {
     network_mode = "wordpress_net"
     ports {
         internal = 80
-        external = 80
+        external = 8000
     }
     env = ["WORDPRESS_DB_HOST=database", "WORDPRESS_DB_USER=user", "WORDPRESS_DB_PASSWORD=user", "WORDPRESS_DB_NAME=wordpress"]
     volumes {
