@@ -21,4 +21,4 @@ cd
 crontab -e
 
 # Reinicio de la instancia
-@reboot(sleep 90; sh /terraform/local/startup.sh)
+@reboot /terraform/local/startup.sh
