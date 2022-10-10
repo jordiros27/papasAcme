@@ -10,13 +10,13 @@ terraform {
 }
  
 provider "aws" {
-	region = "us-east-1"
+	region = "us-east-2"
 	access_key = "AKIAQSD4FDSBSEKTQGLD"
 	secret_key = "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"
 }
 
 resource "aws_instance" "balancer-ec2" {
-	ami = "ami-026b57f3c383c2eec"
+	ami = "ami-0f924dc71d44d23e2"
 	instance_type = "t2.micro"
   key_name = aws_key_pair.ssh-public-key.key_name
   user_data = <<-EOF
@@ -33,9 +33,9 @@ resource "aws_instance" "balancer-ec2" {
 }
 
 resource "aws_instance" "app-ec2" {
-	ami = "ami-026b57f3c383c2eec"
+	ami = "ami-0f924dc71d44d23e2"
 	instance_type = "t2.micro"
-  key_name = "ssh-key"
+  key_name = aws_key_pair.ssh-public-key.key_name
 	tags = {
 		Name = "app-papas-acme"
 	}
@@ -110,7 +110,7 @@ resource "aws_security_group" "ssh-security" {
     }
 }
 
-resource "aws_key_pair" "ssh-public-key" {
-  key_name   = "ssh-public-key"
-  public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCIKVzFa1NQO0waKSJo0wXBGgh586y48nspiGtvRh7+XGfJYitjUa0zj/NB69GAks6gJ4Usuf2OWltHl3OYPX+xKSmYc6K5IWwkATZvxGgyMQB9CBMxzTic3F5M+BnBYuHU2nrx6Dtni9YvoDruVr/eeGuJyqkWRn1M7elX+cBRb2LykrRTF21ejSsKrkFMVTQKEROsGjrEpmT8BMv9PQbGxNUGskKfe9qrMtbm93QGOhQvyic+JMxpDk2Du/GdXYkkAzgqMMCzBcyln44yKa/vImxU3UgfSosQSP189MwdimoMnas9cnyuJqoTrOKCwjwdxgbhC3JosEt0WqJe99TV"
+resource "aws_key_pair" "ssh-key" {
+  key_name   = "ssh-key"
+  public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCFHAJwnUMdH0JIGi9JSpdOZ2IuorxxIyDOXlUPBS3JjHjPv8eieM4d3D7NxmNBTlvl3hV8r+46z6fcFD72rGDrvG0vmoVvyNEBIcuQgZ9KwcbtjGGiHcAtDSFEWgqVkXl2KkO/0ItyGUlbndLBSW/Rx9+sChA+n+KtyihqkhkNRFDAPbag4PQNqUGprcJS8FVzubSIu/HRnfjReh7O6E6LE+yrJXX5HoMnp5FshtidBtnvmcjxoMjtc5uZPMqz39VcsiQuOpSdZdWf9aCGRLcRsEhJYcq3jmxYnOYbz0X+kapNJmVebsjWcL3NDEZ0AQmx95EpJI0oIPmAbhz+QtvL"
   }
