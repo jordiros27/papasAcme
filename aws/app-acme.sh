@@ -15,18 +15,13 @@ sudo service docker start
 sudo systemctl enable docker
 sudo groupadd docker
 sudo usermod -aG docker ec2-user
-docker run hello-world
 
-# Descargar archivos terraform
-mkdir terraform
-cd terraform/
-git init
-git pull https://github.com/jordiros27/papasAcme.git
+# Preparar script para reboot
+sudo chmod u+x local/startup.sh
+sudo cp local/startup.sh ../etc/init/d
+cd ../etc/rc2.d
+sudo ln -s /etc/init.d/startup.sh
+sudo mv startup.sh S70test.sh
 
-# Ejecutar terraform
-cd local/
-mkdir execution/
-cp main.tf execution/
-cd execution/
-terraform init 
-terraform apply -auto-approve
+# Reinicio de la instancia
+sudo reboot
