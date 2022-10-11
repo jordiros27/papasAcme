@@ -11,8 +11,8 @@ terraform {
  
 provider "aws" {
 	region = "us-east-2"
-	access_key = "AKIAQSD4FDSBXBGNLAOE"
-	secret_key = "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"
+	access_key = ""
+	secret_key = ""
 }
 
 resource "aws_instance" "balancer-ec2" {
