@@ -11,7 +11,7 @@ terraform {
  
 provider "aws" {
 	region = "us-east-2"
-	
+  
 }
 
 resource "aws_instance" "balancer-ec2" {
@@ -20,8 +20,10 @@ resource "aws_instance" "balancer-ec2" {
   key_name = "ssh-key"
   user_data = <<-EOF
 	      #!/bin/bash
-        $IP=(curl ifconfig.me)
-        echo $IP papas-acme.com www.papas-acme.com > /etc/host
+        sudo yum update
+        sudo amazon-linux-extras install nginx1 -y
+        sudo systemctl enable nginx
+        sudo systemctl start nginx
 		    EOF
 	tags = {
 		Name = "balancer-papas-acme"
