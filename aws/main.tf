@@ -46,7 +46,6 @@ resource "aws_instance" "app-ec2" {
 	tags = {
 		Name = "app-papas-acme"
 	}
-
   user_data = <<-EOF
 	      #!/bin/bash
 		    sudo yum update -y
@@ -58,7 +57,7 @@ resource "aws_instance" "app-ec2" {
         sh aws/app-acme.sh
 		    EOF
 
-  vpc_security_group_ids = [aws_security_group.ssh-security.id]
+  vpc_security_group_ids = [aws_security_group.ssh-security.id, aws_security_group.proxy-security.id]
 
 }
 
@@ -116,7 +115,26 @@ resource "aws_security_group" "ssh-security" {
     }
 }
 
+resource "aws_security_group" "proxy-security" {
+	name = "proxy-security-goup"
+ 
+	ingress {
+		from_port = 8080
+		to_port = 8080
+		protocol = "tcp"
+		cidr_blocks = ["0.0.0.0/0"]
+	}
+ 
+  egress {
+        from_port = 0
+        to_port = 0
+        protocol = "-1"
+        cidr_blocks = ["0.0.0.0/0"]
+    }
+}
+
 resource "aws_key_pair" "ssh-key" {
   key_name   = "ssh-key"
   public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCFHAJwnUMdH0JIGi9JSpdOZ2IuorxxIyDOXlUPBS3JjHjPv8eieM4d3D7NxmNBTlvl3hV8r+46z6fcFD72rGDrvG0vmoVvyNEBIcuQgZ9KwcbtjGGiHcAtDSFEWgqVkXl2KkO/0ItyGUlbndLBSW/Rx9+sChA+n+KtyihqkhkNRFDAPbag4PQNqUGprcJS8FVzubSIu/HRnfjReh7O6E6LE+yrJXX5HoMnp5FshtidBtnvmcjxoMjtc5uZPMqz39VcsiQuOpSdZdWf9aCGRLcRsEhJYcq3jmxYnOYbz0X+kapNJmVebsjWcL3NDEZ0AQmx95EpJI0oIPmAbhz+QtvL"
   }
+
