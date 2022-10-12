@@ -12,3 +12,6 @@ cat ip.txt
 cd ..
 IP=$(cat aws/ip.txt)
 sed -i '' 's+ipApp+'"$IP"'+' nginx/nginx.conf
+git add nginx
+git commit -m "Dirección IP app actualizada"
+git push

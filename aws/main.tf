@@ -25,6 +25,7 @@ resource "aws_instance" "balancer-ec2" {
         sudo amazon-linux-extras install nginx1 -y
         sudo systemctl enable nginx
         sudo systemctl start nginx
+        sleep 120
         mkdir nginx
         cd nginx/
         git init
