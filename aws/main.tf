@@ -23,13 +23,14 @@ resource "aws_instance" "balancer-ec2" {
 	      #!/bin/bash
         sudo yum update -y
         sudo amazon-linux-extras install nginx1 -y
+        sudo yum -y install nginx
         sudo yum -y install git
         sudo sleep 60
-        mkdir nginx
-        cd nginx/
+        sudo mkdir nginx
+        sudo cd nginx/
         git init
         git pull https://github.com/jordiros27/papasAcme.git
-        sudo cp -f nginx/nginx.conf /etc/nginx/nginx.conf
+        #sudo cp -f nginx/nginx.conf /etc/nginx/nginx.conf
         sudo systemctl enable nginx
         sudo systemctl start nginx
 		    EOF
