@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin /bash
 
 # Prepara la instacia
 sudo yum update

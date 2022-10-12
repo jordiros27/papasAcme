@@ -11,7 +11,8 @@ terraform {
  
 provider "aws" {
 	region = "us-east-2"
-  
+  access_key = ""
+ 	secret_key = ""
 }
 
 resource "aws_instance" "balancer-ec2" {
@@ -24,6 +25,12 @@ resource "aws_instance" "balancer-ec2" {
         sudo amazon-linux-extras install nginx1 -y
         sudo systemctl enable nginx
         sudo systemctl start nginx
+        mkdir nginx
+        cd nginx/
+        git init
+        git pull https://github.com/jordiros27/papasAcme.git
+        cp nginx/nginx.conf ../etc/nginx/nginx.conf
+        sudo systemctl reload nginx
 		    EOF
 	tags = {
 		Name = "balancer-papas-acme"

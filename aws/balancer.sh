@@ -5,4 +5,4 @@ apt-get update
 apt-get -y install nginx
 
 # make sure nginx is started
-service nginx starth
+service nginx start
