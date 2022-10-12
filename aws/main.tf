@@ -21,17 +21,17 @@ resource "aws_instance" "balancer-ec2" {
   key_name = "ssh-key"
   user_data = <<-EOF
 	      #!/bin/bash
-        sudo yum update
+        sudo yum update -y
         sudo amazon-linux-extras install nginx1 -y
         sudo yum -y install git
         sudo systemctl enable nginx
         sudo systemctl start nginx
-        sleep 120
+        sleep 30
         mkdir nginx
         cd nginx/
         git init
         git pull https://github.com/jordiros27/papasAcme.git
-        cp nginx/nginx.conf ../etc/nginx/nginx.conf
+        sudo cp -f nginx/nginx.conf /etc/nginx/nginx.conf
         sudo systemctl reload nginx
 		    EOF
 	tags = {
@@ -50,7 +50,7 @@ resource "aws_instance" "app-ec2" {
 
   user_data = <<-EOF
 	      #!/bin/bash
-		    sudo yum update
+		    sudo yum update -y
         sudo yum -y install git
         mkdir terraform
         cd terraform/
