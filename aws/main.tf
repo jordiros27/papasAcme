@@ -25,14 +25,13 @@ resource "aws_instance" "balancer-ec2" {
         sudo amazon-linux-extras install nginx1 -y
         sudo yum -y install nginx
         sudo yum -y install git
-        sudo sleep 60
-        sudo mkdir nginx
-        sudo cd nginx/
-        git init
-        git pull https://github.com/jordiros27/papasAcme.git
-        #sudo cp -f nginx/nginx.conf /etc/nginx/nginx.conf
         sudo systemctl enable nginx
         sudo systemctl start nginx
+        sudo sleep 60
+        sudo git init
+        git pull https://github.com/jordiros27/papasAcme.git
+        sudo cp -f nginx/nginx.conf /etc/nginx/nginx.conf
+        sudo systemctl restart nginx
 		    EOF
 	tags = {
 		Name = "balancer-papas-acme"
