@@ -58,7 +58,7 @@ resource "aws_instance" "app-ec2" {
         sh aws/app-acme.sh
 		    EOF
 
-  vpc_security_group_ids = [aws_security_group.ssh-security.id, aws_security_group.http-security.id, aws_security_group.https-security.id]
+  vpc_security_group_ids = [aws_security_group.ssh-security.id]
 
 }
 
