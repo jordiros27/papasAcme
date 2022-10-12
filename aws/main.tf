@@ -23,6 +23,7 @@ resource "aws_instance" "balancer-ec2" {
 	      #!/bin/bash
         sudo yum update
         sudo amazon-linux-extras install nginx1 -y
+        sudo yum -y install git
         sudo systemctl enable nginx
         sudo systemctl start nginx
         sleep 120
