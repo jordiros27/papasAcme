@@ -2,12 +2,6 @@
 
 ## 1º: Configuración de una infraestructura local con contenedores para wordpress
 
-### Comenzando 🚀
-
-En está primera parte han predominado dos ideas, lanzar una prueba en local de lo que sería el nodo de la aplicación y ver el funcionamiento de Terraform para Docker.
-
-Para resolver está parte hay que entender que para lanzar una aplicación wordpress nos basamos en dos servicios diferenciasdos, la aplicación wordpress y la base de datos para almacenar la información.
-
 ### Pre-requisitos 📋
 
 Tener instalado [Docker](http://docker.com) y [Terraform](http://terraform.io).
