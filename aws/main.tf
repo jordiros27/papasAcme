@@ -12,8 +12,8 @@ terraform {
 # Proveedor de AWS
 provider "aws" {
 	region = "us-east-2"
-  access_key = "AKIAZ5VSVPZXEP45PBDE"
- 	secret_key = "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"
+  access_key = ""
+ 	secret_key = ""
 }
 
 # Proxy inverso con ngnix
