@@ -26,7 +26,7 @@ Para está parte he creado una instancia básica, con los grupos de ssh y puerto
 
 Tras la creación y ejecución del fichero app-acme.sh se reinicia la instancia, pero no se ejecuta el startup.sh ubicado en /etc/init.d. Me he peleado bastante con ello y no he encontrado ninguna solución, por lo que para poder ejecutar correctamente la app, se deberia conectar a la instancia por ssh mediante el ssh-key.pem y ejecutar la orden _sh /etc/init.d/startup.sh_. Alguna página de consulta sobre la ejecución tras reboot, [enlace](https://redessy.com/como-ejecutar-automaticamente-scripts-y-comandos-de-inicio-de-linux/).
 
-[Como instalar terraform en ubuntu](https://conpilar.kryptonsolid.com/como-instalar-terraform-en-ubuntu-20-04/)
+[Como instalar terraform en ubuntu](https://conpilar.kryptonsolid.com/como-instalar-terraform-en-ubuntu-20-04/) y 
 [Como instalar docker en ec2-linux](https://www.cyberciti.biz/faq/how-to-install-docker-on-amazon-linux-2/)
 
 ## 3º: Creación de la instancia del balanceador
