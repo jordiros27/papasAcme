@@ -12,8 +12,8 @@ terraform {
 # Proveedor de AWS
 provider "aws" {
 	region = "us-east-2"
-  access_key = "AKIAZ5VSVPZXEP45PBDE"
- 	secret_key = "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"
+  access_key = ""
+ 	secret_key = ""
 }
 
 # Proxy inverso con ngnix
@@ -21,6 +21,7 @@ resource "aws_instance" "balancer-ec2" {
 	ami = "ami-0f924dc71d44d23e2"
 	instance_type = "t2.micro"
   key_name = "ssh-key"
+  subnet_id = aws_subnet.public-subnet.id
   user_data = <<-EOF
 	      #!/bin/bash
         sudo yum update -y
@@ -31,7 +32,7 @@ resource "aws_instance" "balancer-ec2" {
         sudo systemctl start nginx
         sudo sleep 60
         sudo git init
-        git pull https://github.com/jordiros27/papasAcme.git
+        sudo git pull https://github.com/jordiros27/papasAcme.git
         sudo cp -f nginx/nginx.conf /etc/nginx/nginx.conf
         sudo systemctl restart nginx
 		    EOF
@@ -46,6 +47,7 @@ resource "aws_instance" "app-ec2" {
 	ami = "ami-0f924dc71d44d23e2"
 	instance_type = "t2.micro"
   key_name = "ssh-key"
+  subnet_id = aws_subnet.private-subnet.id
 	tags = {
 		Name = "app-papas-acme"
 	}
@@ -55,8 +57,8 @@ resource "aws_instance" "app-ec2" {
         sudo yum -y install git
         mkdir terraform
         cd terraform/
-        git init
-        git pull https://github.com/jordiros27/papasAcme.git
+        sudo git init
+        sudo git pull https://github.com/jordiros27/papasAcme.git
         sh aws/app-acme.sh
 		    EOF
 
@@ -67,7 +69,7 @@ resource "aws_instance" "app-ec2" {
 # Grupos de seguridad
 resource "aws_security_group" "http-security" {
 	name = "http-security-goup"
- 
+ vpc_id                  = aws_vpc.main.id
 	ingress {
 		from_port = 80
 		to_port = 80
@@ -85,7 +87,7 @@ resource "aws_security_group" "http-security" {
 
 resource "aws_security_group" "https-security" {
 	name = "https-security-goup"
- 
+ vpc_id                  = aws_vpc.main.id
 	ingress {
 		from_port = 443
 		to_port = 443
@@ -103,7 +105,7 @@ resource "aws_security_group" "https-security" {
 
 resource "aws_security_group" "ssh-security" {
 	name = "ssh-security-goup"
- 
+ vpc_id                  = aws_vpc.main.id
 	ingress {
 		from_port = 22
 		to_port = 22
@@ -119,9 +121,10 @@ resource "aws_security_group" "ssh-security" {
     }
 }
 
+
 resource "aws_security_group" "proxy-security" {
 	name = "proxy-security-goup"
- 
+ vpc_id                  = aws_vpc.main.id
 	ingress {
 		from_port = 8080
 		to_port = 8080
@@ -137,7 +140,83 @@ resource "aws_security_group" "proxy-security" {
     }
 }
 
+
+# Clave SSH
 resource "aws_key_pair" "ssh-key" {
   key_name   = "ssh-key"
   public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCFHAJwnUMdH0JIGi9JSpdOZ2IuorxxIyDOXlUPBS3JjHjPv8eieM4d3D7NxmNBTlvl3hV8r+46z6fcFD72rGDrvG0vmoVvyNEBIcuQgZ9KwcbtjGGiHcAtDSFEWgqVkXl2KkO/0ItyGUlbndLBSW/Rx9+sChA+n+KtyihqkhkNRFDAPbag4PQNqUGprcJS8FVzubSIu/HRnfjReh7O6E6LE+yrJXX5HoMnp5FshtidBtnvmcjxoMjtc5uZPMqz39VcsiQuOpSdZdWf9aCGRLcRsEhJYcq3jmxYnOYbz0X+kapNJmVebsjWcL3NDEZ0AQmx95EpJI0oIPmAbhz+QtvL"
+}
+
+# VPC
+resource "aws_vpc" "main" {
+  cidr_block = "10.0.0.0/27"
+}
+
+# Subnets
+resource "aws_subnet" "private-subnet" {
+  vpc_id                  = aws_vpc.main.id
+  cidr_block              = "10.0.0.16/28"
+  map_public_ip_on_launch = "false"
+  availability_zone       = "us-east-2a"
+
+  tags = {
+    Name = "private-subnet"
   }
+}
+
+resource "aws_subnet" "public-subnet" {
+  vpc_id                  = aws_vpc.main.id
+  cidr_block              = "10.0.0.0/28"
+  map_public_ip_on_launch = "true"
+  availability_zone       = "us-east-2a"
+
+  tags = {
+    Name = "public-subnet"
+  }
+}
+
+# Internet Gateway
+resource "aws_internet_gateway" "internet-gw" {
+  vpc_id = aws_vpc.main.id
+
+  tags = {
+    Name = "internet-gw"
+  }
+}
+
+# Enrutamiento y salida a internet
+resource "aws_route_table" "public-rt" {
+  vpc_id = aws_vpc.main.id
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = aws_internet_gateway.internet-gw.id
+  }
+}
+
+resource "aws_route_table_association" "public-rta" {
+  subnet_id      = aws_subnet.public-subnet.id
+  route_table_id = aws_route_table.public-rt.id
+}
+
+resource "aws_eip" "nat" {
+  vpc = true
+}
+
+resource "aws_nat_gateway" "nat-gw" {
+  allocation_id = aws_eip.nat.id
+  subnet_id     = aws_subnet.public-subnet.id
+  depends_on    = [aws_internet_gateway.internet-gw]
+}
+
+resource "aws_route_table" "private-rt" {
+  vpc_id = aws_vpc.main.id
+  route {
+    cidr_block     = "0.0.0.0/0"
+    nat_gateway_id = aws_nat_gateway.nat-gw.id
+  }
+}
+
+resource "aws_route_table_association" "private-rta" {
+  subnet_id      = aws_subnet.private-subnet.id
+  route_table_id = aws_route_table.private-rt.id
+}
